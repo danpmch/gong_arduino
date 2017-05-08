@@ -1,29 +1,25 @@
 
 #include <Servo.h>
 
-Servo myServo;
-
 const int firePin = 12;
+const int solenoidPin = 9;
 
-const int STRIKE_ANGLE = 80;
-const int MAX_START_ANGLE = 0;
-const int TRAVEL_TIME = 120;
+const int ON_DURATION = 25;
 
 void setup() {
-  myServo.attach(9);
-  myServo.write(MAX_START_ANGLE);
-
   Serial.begin(9600);
 
   pinMode(firePin, INPUT);
+
+  pinMode(solenoidPin, OUTPUT);
+  digitalWrite(solenoidPin, LOW);
 }
 
 void fire()
 {
-  myServo.write(STRIKE_ANGLE);
-  delay(TRAVEL_TIME);
-  myServo.write(MAX_START_ANGLE);
-  delay(TRAVEL_TIME);
+  digitalWrite(solenoidPin, HIGH);
+  delay(ON_DURATION);
+  digitalWrite(solenoidPin, LOW);
 }
 
 void loop() {
@@ -33,13 +29,9 @@ void loop() {
      Serial.read();
      Serial.flush();
      fire();
-  }
-
-  
-  if( digitalRead(firePin) )
-  {
+  } else if( digitalRead(firePin) ) {
     fire();
-  }
-  
+  }  
+
   delay(15);
 }
